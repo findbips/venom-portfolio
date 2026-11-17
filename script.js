@@ -46,7 +46,6 @@ C.tools.forEach((t) => $("#tools").append(el("li", "", t)));
 C.strengths.forEach((t) => $("#pills").append(el("li", "", t)));
 [...C.skills, ...C.skills].forEach((t) => $("#strip").append(el("span", "", t)));
 C.work.forEach((w) => $("#rail").append(el("article", "proj", `<div class="proj__thumb">${w.tag}</div><div class="proj__body"><h3>${w.title}</h3><p>${w.desc}</p>${w.url ? `<a href="${w.url}" target="_blank" rel="noopener">View project</a>` : `<p style="margin-top:10px;opacity:.6">Case study coming soon</p>`}</div>`)));
-C.steps.forEach(([b, s]) => $("#steps").append(el("li", "", `<b>${b}</b><span>${s}</span>`)));
 $("#emailLink").textContent = C.email; $("#emailLink").href = `mailto:${C.email}`;
 $("#waLink").textContent = C.whatsappLabel; $("#waLink").href = `https://wa.me/${C.whatsapp}`;
 C.socials.forEach(([n, u]) => { const a = el("a", "", n); a.href = u; a.target = "_blank"; a.rel = "noopener"; $("#socials").append(a); });
@@ -59,16 +58,12 @@ $("#prev").addEventListener("click", () => $("#rail").scrollBy({ left: -$("#rail
 $("#next").addEventListener("click", () => $("#rail").scrollBy({ left: $("#rail").clientWidth * 0.6, behavior: "smooth" }));
 
 /* ----- nav, progress bar, process timeline (all on one scroll listener) ----- */
-const nav = $("#nav"), bar = $("#progress"), tl = $("#tl"), stepEls = [...document.querySelectorAll("#steps li")];
+const nav = $("#nav"), bar = $("#progress");
 let lastY = 0, ticking = false;
 function onScroll() {
   const y = scrollY, max = root.scrollHeight - innerHeight;
   bar.style.transform = `scaleX(${max > 0 ? y / max : 0})`;
   nav.classList.toggle("hide", y > lastY && y > 160); lastY = y;
-  const r = tl.getBoundingClientRect(), t = clamp01((innerHeight - r.top) / (innerHeight * 0.9));
-  tl.style.setProperty("--tilt", `${34 * (1 - clamp01(t * 1.5))}deg`);
-  $("#tlHead").style.setProperty("--p", `${5 + 90 * clamp01((t - 0.2) / 0.7)}%`);
-  stepEls.forEach((s, i) => s.classList.toggle("on", t > 0.35 + i * 0.16));
   ticking = false;
 }
 addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
@@ -356,6 +351,58 @@ function initCard() {
   
 })();
 
+
+/* ----- interactive example case: fix a hacked, slow WooCommerce store ----- */
+(() => {
+  const nav = $("#caseNav"), view = $("#caseView"), hNum = $("#hNum"), hBar = $("#hBar");
+  const SCAN = [["wp core verify-checksums", "14 core files modified", "bad"], ["scan wp-content/uploads", "3 backdoor files found", "bad"], ["wp plugin list --update=available", "7 plugins out of date", "warn"], ["pagespeed --mobile", "score 31 · loads in 6.8 s", "bad"]];
+  const FIX = ["Remove backdoors and injected code", "Restore clean WordPress core files", "Update plugins and theme", "Reset passwords and security keys", "Add firewall and 2FA, lock file editing"];
+  const SPEED = [["Page caching", 1.7], ["Compress and resize images", 1.4], ["Lazy-load and defer scripts", 1.3], ["Clean database and unused plugins", 1.0]];
+  const GO = ["SSL certificate is valid", "Test order completes at checkout", "Contact and order emails deliver", "Daily backups are scheduled", "Uptime monitoring is on"];
+  const S = { step: 0, scanned: false, fix: new Set(), speed: new Set(), live: false, timers: [] };
+  const health = () => 31 + 7 * S.fix.size + 7 * S.speed.size + (S.live ? 6 : 0);
+  const saved = () => [...S.speed].reduce((a, i) => a + SPEED[i][1], 0);
+  const later = (fn, ms) => S.timers.push(setTimeout(fn, ms));
+  const check = (on, text, extra = "", i = "") => `<button class="chk ${on ? "on" : ""}" data-i="${i}" type="button"><i>✓</i><span>${text}</span>${extra}</button>`;
+
+  const views = [
+    () => {
+      view.innerHTML = `<p class="case__lead">The owner says: “The site is slow, orders have dropped, and some visitors land on a spam page.” Before touching anything, find out what is really wrong.</p><div class="term" id="term"></div><button class="cbtn" id="rescan" type="button">Run the scan again</button>`;
+      const term = $("#term"), add = (r) => term.append(el("p", "", `<span>$ ${r[0]}</span><b class="${r[2]}">${r[1]}</b>`));
+      const verdict = () => term.append(el("p", "verdict", "Verdict: the site is infected and slow. Fix security first, then speed."));
+      if (S.scanned) { SCAN.forEach(add); verdict(); }
+      else { SCAN.forEach((r, i) => later(() => add(r), 500 + i * 650)); later(() => { verdict(); S.scanned = true; }, 500 + SCAN.length * 650); }
+      $("#rescan").onclick = () => { S.scanned = false; render(); };
+    },
+    () => {
+      const n = S.fix.size;
+      view.innerHTML = `<p class="case__lead">Security comes first. Tick each fix as it is cleared.</p>${FIX.map((t, i) => check(S.fix.has(i), t, "", i)).join("")}<button class="cbtn fill" id="fixAll" type="button">Fix everything</button>${n === FIX.length ? `<p class="note">The site is clean. Now make it fast.</p>` : ""}`;
+      view.querySelectorAll(".chk").forEach((b) => (b.onclick = () => { const i = +b.dataset.i; S.fix.has(i) ? S.fix.delete(i) : S.fix.add(i); render(); }));
+      $("#fixAll").onclick = () => { FIX.forEach((_, i) => S.fix.add(i)); render(); };
+    },
+    () => {
+      const t = (6.8 - saved()).toFixed(1), score = 31 + Math.round((63 * saved()) / 5.4);
+      view.innerHTML = `<p class="case__lead">Now the speed. Switch on each fix and watch the numbers move.</p><div class="read"><div><b>${t} s</b><span>Load time</span></div><div><b>${score}</b><span>Mobile score</span></div></div>${SPEED.map(([x, g], i) => check(S.speed.has(i), x, `<em>−${g} s</em>`, i)).join("")}${S.speed.size === SPEED.length ? `<p class="note">Loads in ${t} seconds. Faster pages keep more shoppers at checkout.</p>` : ""}`;
+      view.querySelectorAll(".chk").forEach((b) => (b.onclick = () => { const i = +b.dataset.i; S.speed.has(i) ? S.speed.delete(i) : S.speed.add(i); render(); }));
+    },
+    () => {
+      view.innerHTML = `<p class="case__lead">Before it goes live, test what a customer would do and set up protection so it stays fixed.</p><div id="go">${GO.map((t, i) => check(S.live, t, "", i)).join("")}</div><button class="cbtn fill" id="runGo" type="button">${S.live ? "Run the checks again" : "Run go-live checks"}</button><div id="goNote">${S.live ? `<p class="note">Live. Handed over with monitoring and a short report.</p>` : ""}</div>`;
+      $("#runGo").onclick = () => {
+        S.live = false; setHealth(); view.querySelectorAll(".chk").forEach((b) => b.classList.remove("on")); $("#goNote").innerHTML = "";
+        GO.forEach((_, i) => later(() => view.querySelectorAll(".chk")[i].classList.add("on"), 400 + i * 450));
+        later(() => { S.live = true; setHealth(); $("#goNote").innerHTML = `<p class="note">Live. Handed over with monitoring and a short report.</p>`; }, 400 + GO.length * 450);
+      };
+    }
+  ];
+  function setHealth() { const h = health(); hNum.textContent = h; hBar.style.width = h + "%"; hBar.closest(".health").dataset.t = h < 50 ? "bad" : h < 90 ? "warn" : "good"; }
+  function render() {
+    S.timers.forEach(clearTimeout); S.timers = []; setHealth();
+    nav.innerHTML = "";
+    C.steps.forEach(([b, d], i) => { const li = el("li"), bt = el("button", i === S.step ? "on" : "", `<span>0${i + 1}</span><b>${b}</b><em>${d}</em>`); bt.type = "button"; bt.onclick = () => { S.step = i; render(); }; li.append(bt); nav.append(li); });
+    views[S.step]();
+  }
+  render();
+})();
 
 /* ----- cursor follower ring: dot (exact), ring (lerp .2), halo (lerp .12) ----- */
 (() => {
