@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Biplob Sutradhar — WordPress Developer</title>
+<meta name="description" content="WordPress and WooCommerce developer. I turn slow, underperforming sites into fast, secure, high-converting ones.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="loader" id="loader"><span>● REC <b id="tc">00:00:00:00</b></span></div>
+<div class="progress" id="progress"></div>
+<div class="ring-dot" id="cDot"></div><div class="ring-halo" id="cHalo"></div><div class="ring-main" id="cRing"></div>
+
+<header class="nav" id="nav">
+  <a class="nav__name" href="#top" id="navName"></a>
+  <nav><a href="#work">Work</a><a href="#process">Process</a><a href="#about">About</a><a class="nav__cta" href="#contact">Let’s talk</a></nav>
+</header>
+
+<main id="top">
+<section class="hero">
+  <div class="stage" id="stage">
+    <svg class="lanyard" aria-hidden="true"><path id="strapPath" class="lanyard__strap" d=""/><text class="lanyard__text"><textPath href="#strapPath" id="strapText"></textPath></text></svg>
+    <div class="card" id="card" role="img" aria-label="ID card. You can drag it.">
+      <div class="card__inner">
+        <div class="card__clip" aria-hidden="true"><span></span></div><div class="card__slot" aria-hidden="true"></div>
+        <div class="card__head"><span>CREW PASS</span><span class="card__rec"><i></i>REC</span></div>
+        <div class="card__photo"><img id="cardPhoto" alt="" draggable="false"><span class="card__corner tl"></span><span class="card__corner tr"></span><span class="card__corner bl"></span><span class="card__corner br"></span></div>
+        <div class="card__role" id="cardRole"></div><div class="card__name" id="cardName"></div>
+        <div class="card__foot" aria-hidden="true"><span class="card__code" id="cardCode"></span><span class="card__bars"></span></div>
+        <div class="card__holo" aria-hidden="true"></div>
+      </div>
+    </div>
+    <p class="hint" id="hint">Grab the card ↑</p>
+  </div>
+  <div class="wrap hero__copy">
+    <p class="badge"><i></i>Available for new projects</p>
+    <h1 id="heroName"></h1>
+    <p class="hero__tag" id="heroTag"></p>
+    <p class="hero__co" id="heroCo"></p>
+    <div class="btns"><a class="btn btn--light" href="#work">See my work</a><a class="btn" id="upworkBtn" target="_blank" rel="noopener">Hire me on Upwork</a></div>
+    <ul class="stats" id="stats"></ul>
+    <ul class="tools" id="tools"></ul>
+  </div>
+</section>
+
+<div class="strip" aria-hidden="true"><div class="strip__track" id="strip"></div></div>
+
+<section class="sec" id="work"><div class="wrap">
+  <div class="sec__head"><p class="label">01 — Selected work</p><h2>Sites I’ve fixed, rebuilt and launched.</h2>
+    <div class="arrows"><button id="prev" aria-label="Previous">←</button><button id="next" aria-label="Next">→</button></div></div>
+  <div class="rail" id="rail"></div>
+</div></section>
+
+<section class="sec" id="process"><div class="wrap">
+  <p class="label">02 — Process</p><h2>How a site gets fixed.</h2>
+  <div class="tl" id="tl"><div class="tl__board" id="tlBoard">
+    <div class="tl__row"><b>V2</b><i style="left:4%;width:30%"></i><i style="left:40%;width:22%"></i></div>
+    <div class="tl__row"><b>V1</b><i style="left:0;width:24%"></i><i style="left:28%;width:36%"></i><i style="left:68%;width:28%"></i></div>
+    <div class="tl__row"><b>A1</b><i style="left:8%;width:44%"></i><i style="left:56%;width:34%"></i></div>
+    <div class="tl__row"><b>A2</b><i style="left:2%;width:18%"></i><i style="left:30%;width:50%"></i></div>
+    <span class="tl__head" id="tlHead"></span>
+  </div></div>
+  <ol class="steps" id="steps"></ol>
+</div></section>
+
+<section class="sec" id="about"><div class="wrap about">
+  <div class="reveal" id="reveal">
+    <div class="reveal__frame" id="frame">
+      <img id="normal" alt="Biplob Sutradhar, side profile" draggable="false" loading="lazy">
+      <div class="reveal__hero" id="heroLayer"><img id="hero" alt="" draggable="false" loading="lazy"></div>
+      <span class="reveal__ring" id="ring"></span>
+    </div>
+    <p class="reveal__hint">Hover the photo</p>
+  </div>
+  <div><p class="label">03 — About</p><h2>I build sites that earn.</h2>
+    <p class="about__p" id="aboutP"></p><ul class="pills" id="pills"></ul></div>
+</div></section>
+
+<section class="sec" id="contact"><div class="wrap">
+  <div class="contact">
+    <p class="label">04 — Contact</p><h2>Let’s make your site work harder.</h2>
+    <div class="crow"><span>Email</span><a id="emailLink"></a><button id="copy" type="button">Copy</button></div>
+    <div class="crow"><span>WhatsApp</span><a id="waLink" target="_blank" rel="noopener"></a></div>
+    <div class="socials" id="socials"></div>
+  </div>
+  <p class="credit">© <span id="yr"></span> Biplob Sutradhar · Goo button by <a href="https://github.com/exteestudio/venom-button" target="_blank" rel="noopener">exteestudio</a> (MIT)</p>
+</div></section>
+</main>
+
+<iframe class="venom-frame" id="venomFrame" title="Let's collab button" aria-hidden="true" tabindex="-1"></iframe>
+<a class="venom-hit" id="venomHit">let’s collab</a>
+<p id="status" hidden></p>
+<script src="script.js"></script>
+</body>
+</html>
